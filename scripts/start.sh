@@ -1,1 +1,4 @@
-start.sh
+#!/bin/sh
+
+start-hbase.sh &
+hbase-daemon.sh start thrift &

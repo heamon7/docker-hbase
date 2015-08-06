@@ -22,10 +22,34 @@ RUN	wget https://www.apache.org/dist/hbase/$HBASE_VERSION/hbase-$HBASE_VERSION-b
 		
 # Mounting the HBase data folder and exposing the ports
 VOLUME /data
-EXPOSE 16000 16010 16020 16030 16100 
+
+# 2181: zookeeper
+# 8020: HDFS port
+# 60000: HBase Master API port; 
+# 60010 HBase Master Web UI
+# 60020: HBase Regionserver API port; 
+# 60030 HBase Regionserver web UI; 
+# 9090 Hbase Thrift port
+# 10000 hive; 
+# 8888 hue; 
+# 21050 Impala JDBC Port
+# 8047: Drill UI
+# 31010: Drill Client
+# 9092: Kafka
+# 7077: Spark Master Port
+# 6066: Spark Rest Port
+# 18080: Spark Master UI
+# 18081: Spark Worker WebUI
+# 18088: Spark History Server
+# 4040: SparkUI
+EXPOSE  2181 8020 60000 60010 60020 60030 9090 10000 8888 21050 8047 31010 9092 7077 6066 18080 18081 18088 4040 16000 16010 16020 16030 16100 
+
+
 
 # Editing the HBase configuration file to use the local filesystem
-ADD https://raw.githubusercontent.com/GELOG/docker-ubuntu-hbase/master/conf/hbase-site.xml $HBASE_HOME/conf/hbase-site.xml
+COPY conf/hbase-site.xml  $HBASE_HOME/conf/
 
 # Starting HBase
-CMD $HBASE_HOME/bin/hbase master start
+COPY scripts/start.sh /opt/hbase/
+ENTRYPOINT ["/bin/bash", "/opt/hbase/start.sh"]
+CMD []
